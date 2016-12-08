@@ -1,0 +1,15 @@
+use_stereo: true
+
+image_left_topic: /stereo/left/image_color
+image_right_topic: /stereo/right/image_color
+image_left_cam_info_topic: /stereo/left/camera_info
+image_right_cam_info_topic: /stereo/right/camera_info
+
+vis_markers_topic: /stereo/visualization_marker
+left_markers_img_topic: markers_left
+right_markers_img_topic: markers_right
+asr_objects_topic: /stereo/objects
+
+marker_size: 0.05
+
+recognizer_name: marker

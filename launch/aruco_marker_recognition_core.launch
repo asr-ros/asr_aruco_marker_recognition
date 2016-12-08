@@ -1,0 +1,13 @@
+<!-- Aruco marker localizer launch. For usage in start_recognizers or to be called by standalone launch file. @author Pascal Meissner, Tobias Allgeyer. @version See SVN -->
+
+<launch>
+
+	<env name="ROSCONSOLE_CONFIG_FILE" 
+	  value="$(find aruco_marker_recognition)/log/rosconsole.config"/>
+  	<node name="aruco_marker_recognition" pkg="aruco_marker_recognition" type="aruco_marker_recognition" output="screen">
+	    
+	   <rosparam file="$(find aruco_marker_recognition)/launch/aruco_marker_recognition_params.yaml" />
+	   
+  	</node>
+  
+</launch>

@@ -1,0 +1,9 @@
+<!-- Standalone launch file for aruco marker recognition, starting object_database. @author Pascal Meissner, Tobias Allgeyer. @version See SVN -->
+
+<launch>
+
+  <include file="$(find aruco_marker_recognition)/launch/aruco_marker_recognition_core.launch" /> 
+  
+  <node name="object_database" type="object_database" pkg="object_database" output="screen" />
+
+</launch>
