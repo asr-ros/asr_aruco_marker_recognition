@@ -4,35 +4,34 @@
   <version>1.0.0</version>
   <description>This package contains a marker recognition system</description>
   <author>Allgeyer Tobias, Meißner Pascal, Qattan Mohamad</author>
-  <maintainer email="pascal.meissner@posteo.de">Meißner Pascal</maintainer>
+  <maintainer email="asr-ros@lists.kit.edu">Meißner Pascal</maintainer>
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>opencv2</build_depend>
   <build_depend>message_filters</build_depend>
   <build_depend>cv_bridge</build_depend>
   <build_depend>camera_calibration_parsers</build_depend>
-  <build_depend>ros_uri</build_depend>
-  <build_depend>ivt</build_depend>
-  <build_depend>ivt_bridge</build_depend>
+  <build_depend>asr_ros_uri</build_depend>
+  <build_depend>asr_ivt</build_depend>
+  <build_depend>asr_ivt_bridge</build_depend>
   <build_depend>message_generation</build_depend>
-  <build_depend>object_database</build_depend>
+  <build_depend>asr_object_database</build_depend>
   <build_depend>asr_msgs</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
 
   
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
-  <run_depend>opencv2</run_depend>
   <run_depend>message_filters</run_depend>
   <run_depend>cv_bridge</run_depend>
   <run_depend>camera_calibration_parsers</run_depend>
-  <run_depend>ros_uri</run_depend>
-  <run_depend>ivt</run_depend>
-  <run_depend>ivt_bridge</run_depend>
+  <run_depend>asr_ros_uri</run_depend>
+  <run_depend>asr_ivt</run_depend>
+  <run_depend>asr_ivt_bridge</run_depend>
   <run_depend>message_runtime</run_depend>
-  <run_depend>object_database</run_depend>
+  <run_depend>asr_object_database</run_depend>
   <run_depend>asr_msgs</run_depend>
-
+  <run_depend>dynamic_reconfigure</run_depend>
 </package>

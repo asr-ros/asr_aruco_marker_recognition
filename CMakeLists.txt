@@ -15,21 +15,30 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-find_package(OpenCV REQUIRED)
+if($ENV{ROS_DISTRO} STREQUAL "kinetic")
+    add_definitions(-DOPENCV_VERSION_3=1)
+endif()
+
+#find_package(OpenCV 2 REQUIRED)
+
 
 find_package(catkin REQUIRED COMPONENTS
+  dynamic_reconfigure
   roscpp
   std_msgs
   message_filters
   cv_bridge
   camera_calibration_parsers
-  ros_uri
-  ivt_bridge
-  ivt
+  asr_ros_uri
+  asr_ivt_bridge
+  asr_ivt
   message_generation
-  object_database
+  asr_object_database
   asr_msgs
 )
+
+generate_dynamic_reconfigure_options( cfg/ArucoMarkerRecognition.cfg)
+include_directories(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
 
 add_service_files(
     FILES
@@ -44,7 +53,7 @@ generate_messages(
 
 catkin_package(
     INCLUDE_DIRS include
-    CATKIN_DEPENDS roscpp std_msgs message_filters cv_bridge camera_calibration_parsers ros_uri ivt_bridge ivt object_database asr_msgs
+    CATKIN_DEPENDS roscpp std_msgs message_filters cv_bridge camera_calibration_parsers asr_ros_uri asr_ivt_bridge asr_ivt asr_object_database asr_msgs dynamic_reconfigure
     DEPENDS OpenCV
 )
 
@@ -70,14 +79,18 @@ set(ARUCO_SRC include/aruco/ar_omp.cpp
                     include/aruco/markerdetector.cpp
                     include/aruco/subpixelcorner.cpp)
 
-add_executable(aruco_marker_recognition
+add_executable(asr_aruco_marker_recognition
                     src/aruco_marker_recognition.cpp
                     src/marker_detection.cpp
                     ${ARUCO_SRC}
                     ${LIBFILES})
 
+add_dependencies(asr_aruco_marker_recognition
+        ${PROJECT_NAME}_gencfg
+        ${${PROJECT_NAME}_EXPORTED_TARGETS}
+)
 
-TARGET_LINK_LIBRARIES(aruco_marker_recognition
+TARGET_LINK_LIBRARIES(asr_aruco_marker_recognition
       ${catkin_LIBRARIES}
       ${OpenCV_LIBRARIES}
 )

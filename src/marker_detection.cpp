@@ -18,6 +18,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include "marker_detection.h"
 #include <ros/console.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 namespace aruco_marker_recognition {
 
@@ -25,12 +27,33 @@ MarkerDetection::MarkerDetection(double marker_size) : marker_size_(marker_size)
 
 }
 
-std::vector<aruco::Marker> MarkerDetection::detect(const cv::Mat &image, CameraId id) {
+std::vector<aruco::Marker> MarkerDetection::detect(const cv::Mat &image, CameraId id, const ArucoMarkerRecognitionConfig &config) {
     aruco::MarkerDetector mDetector;
+
+
+    mDetector.setMinMaxSize(config.minSize, config.maxSize);
+    switch (config.thresholdMethod) {
+    case 0:
+        mDetector.setThresholdMethod(aruco::MarkerDetector::FIXED_THRES);
+        break;
+    case 1:
+        mDetector.setThresholdMethod(aruco::MarkerDetector::ADPT_THRES);
+        break;
+    case 2:
+        mDetector.setThresholdMethod(aruco::MarkerDetector::CANNY);
+        break;
+    }
+    mDetector.setThresholdParams(config.minThreshold, config.maxThreshold);
+
     std::vector<aruco::Marker> markers;
     if (id == CameraId::cam_left) {
         if (cam_params_left_.isValid()) {
             mDetector.detect(image, markers, cam_params_left_, marker_size_);
+
+            if (config.showThresholdImage) {
+                cv::imshow("ThresholdImage", mDetector.getThresholdedImage());
+                cv::waitKey(10);
+            }
             ROS_DEBUG_STREAM("Found " << markers.size() << " marker(s) in left camera image");
         } else {
             ROS_ERROR_STREAM("Left camera parameters (aruco) are not valid");

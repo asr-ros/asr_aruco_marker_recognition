@@ -28,7 +28,7 @@ namespace aruco_marker_recognition {
 const static std::string NODE_NAME("marker_creator");
 
 /** The name of this package **/
-const static std::string PACKAGE_NAME("aruco_marker_recognition");
+const static std::string PACKAGE_NAME("asr_aruco_marker_recognition");
 
 /**
  * @brief This class is used to create marker images which can be recognized with this package

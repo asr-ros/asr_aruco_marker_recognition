@@ -21,8 +21,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include "aruco/aruco.h"
 #include <geometry_msgs/Pose.h>
 #include <sensor_msgs/CameraInfo.h>
+#include <asr_aruco_marker_recognition/ArucoMarkerRecognitionConfig.h>
 
 namespace aruco_marker_recognition {
+
+using namespace asr_aruco_marker_recognition;
 
 /**
  * @brief This class is used to detect markers in an image using the aruco-library
@@ -66,7 +69,7 @@ public:
      * @param id        The id of the camera the given image was fetched from (specified in the enum CameraId)
      * @return          A list containing the detected markers
      */
-    std::vector<aruco::Marker> detect(const cv::Mat &image, CameraId id);
+    std::vector<aruco::Marker> detect(const cv::Mat &image, CameraId id, const ArucoMarkerRecognitionConfig &config);
 
     /**
      * @brief Set the camera parameters of the two cameras

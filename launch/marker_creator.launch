@@ -1,7 +1,7 @@
 <launch>
-	<env name="ROSCONSOLE_CONFIG_FILE" value="$(find aruco_marker_recognition)/log/rosconsole.config"/>
-  	<node name="marker_creator" pkg="aruco_marker_recognition" type="marker_creator" output="screen">
-	      <rosparam file="$(find aruco_marker_recognition)/launch/marker_creator_params.yaml" />
+	<env name="ROSCONSOLE_CONFIG_FILE" value="$(find asr_aruco_marker_recognition)/log/rosconsole.config"/>
+  	<node name="marker_creator" pkg="asr_aruco_marker_recognition" type="marker_creator" output="screen">
+	      <rosparam file="$(find asr_aruco_marker_recognition)/launch/marker_creator_params.yaml" />
   	</node>
 
   

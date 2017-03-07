@@ -27,17 +27,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <opencv2/highgui/highgui.hpp>
 #include <ivt_bridge/ivt_calibration.h>
 #include <visualization_msgs/MarkerArray.h>
-#include <aruco_marker_recognition/GetRecognizer.h>
-#include <aruco_marker_recognition/ReleaseRecognizer.h>
-#include <object_database/ObjectMetaData.h>
+#include <asr_aruco_marker_recognition/GetRecognizer.h>
+#include <asr_aruco_marker_recognition/ReleaseRecognizer.h>
+#include <asr_object_database/ObjectMetaData.h>
 #include <asr_msgs/AsrObject.h>
+#include <dynamic_reconfigure/server.h>
+#include <asr_aruco_marker_recognition/ArucoMarkerRecognitionConfig.h>
 
 #include "marker_detection.h"
 
 namespace aruco_marker_recognition {
 
+using namespace asr_aruco_marker_recognition;
+
 /** The name of this ros node **/
-const static std::string NODE_NAME("aruco_marker_recognition");
+const static std::string NODE_NAME("asr_aruco_marker_recognition");
 
 /** The default marker size in meters **/
 const static double DEFAULT_MARKER_SIZE(0.05);
@@ -47,7 +51,7 @@ const static std::string GET_RECOGNIZER_SERVICE_NAME("get_recognizer");
 const static std::string RELEASE_RECOGNIZER_SERVICE_NAME("release_recognizer");
 
 /** The name of the service offered by the object_database to fetch information about stored objects **/
-const static std::string OBJECT_DB_SERVICE_META_DATA("/object_database/object_meta_data");
+const static std::string OBJECT_DB_SERVICE_META_DATA("/asr_object_database/object_meta_data");
 
 typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> ApproximatePolicy;
 typedef message_filters::Synchronizer<ApproximatePolicy> ApproximateSync;
@@ -89,6 +93,12 @@ private:
     /** The servers of the provided services **/
     ros::ServiceServer get_recognizer_service_;
     ros::ServiceServer release_recognizer_service_;
+
+    /** Dynamic reconfigure server which keeps track of the callback function */
+    dynamic_reconfigure::Server<ArucoMarkerRecognitionConfig> reconfigure_server_;
+
+    /** The configuration file containing the dynamic parameters of this system **/
+    ArucoMarkerRecognitionConfig config_;
 
     /** The client used to contact the object database service **/
     ros::ServiceClient object_mesh_service_client_;
@@ -136,6 +146,14 @@ private:
      * @param cam_info_right        The camera parameters of the right camera
      */
     void imageCallback(const sensor_msgs::ImageConstPtr& input_img_left, const sensor_msgs::ImageConstPtr& input_img_right, const sensor_msgs::CameraInfoConstPtr& cam_info_left, const sensor_msgs::CameraInfoConstPtr& cam_info_right);
+
+    /**
+    * @brief  The callback function which is called when the configuration file has changed
+    *
+    * @param config         The updated configuration
+    * @param level          The level which is the result of ORing together all of level values of the parameters that have changed
+    */
+    void configCallback(ArucoMarkerRecognitionConfig &config_, uint32_t level);
 
     /**
      * @brief Draws recognized markers and their id into an image

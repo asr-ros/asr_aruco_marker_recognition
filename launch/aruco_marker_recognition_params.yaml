@@ -10,6 +10,6 @@ left_markers_img_topic: markers_left
 right_markers_img_topic: markers_right
 asr_objects_topic: /stereo/objects
 
-marker_size: 0.05
+marker_size: 0.01
 
 recognizer_name: marker

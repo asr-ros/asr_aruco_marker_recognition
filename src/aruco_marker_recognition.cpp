@@ -21,6 +21,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <ros_uri/ros_uri.hpp>
 #include <Tracking/ICP.h>
 
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+
 
 namespace aruco_marker_recognition {
 
@@ -35,6 +38,9 @@ ArucoMarkerRecognition::ArucoMarkerRecognition() : nh_(NODE_NAME), marker_size_(
     nh_.getParam("image_right_topic", image_right_topic_);
     nh_.getParam("image_left_cam_info_topic", image_left_cam_info_topic_);
     nh_.getParam("image_right_cam_info_topic", image_right_cam_info_topic_);
+
+    // Set up dynamic reconfigure
+    reconfigure_server_.setCallback(boost::bind(&ArucoMarkerRecognition::configCallback, this, _1, _2));
 
     nh_.getParam("marker_size", marker_size_);
     detector_ = MarkerDetection(marker_size_);
@@ -58,7 +64,7 @@ ArucoMarkerRecognition::ArucoMarkerRecognition() : nh_(NODE_NAME), marker_size_(
     get_recognizer_service_ = nh_.advertiseService(GET_RECOGNIZER_SERVICE_NAME, &ArucoMarkerRecognition::processGetRecognizerRequest, this);
     release_recognizer_service_ = nh_.advertiseService(RELEASE_RECOGNIZER_SERVICE_NAME, &ArucoMarkerRecognition::processReleaseRecognizerRequest, this);
 
-    object_mesh_service_client_ = nh_.serviceClient<object_database::ObjectMetaData>(OBJECT_DB_SERVICE_META_DATA);
+    object_mesh_service_client_ = nh_.serviceClient<asr_object_database::ObjectMetaData>(OBJECT_DB_SERVICE_META_DATA);
 
     std::string left_markers_img_topic;
     std::string right_markers_img_topic;
@@ -110,14 +116,20 @@ void ArucoMarkerRecognition::imageCallback(const sensor_msgs::ImageConstPtr& inp
             ROS_ERROR("Cv_bridge exception: %s", e.what());
             return;
         }
+        cv::Mat img;
+        cv::GaussianBlur(cv_left->image, img, cv::Size(0, 0), config_.gaussianBlurSigma);
+        cv::addWeighted(cv_left->image, config_.sharpenWeightImage, img, config_.sharpenWeightBlur, 0, cv_left->image);
+
+        cv::GaussianBlur(cv_right->image, img, cv::Size(0, 0), config_.gaussianBlurSigma);
+        cv::addWeighted(cv_right->image, config_.sharpenWeightImage, img, config_.sharpenWeightBlur, 0, cv_right->image);
 
         detector_.setCameraParameters(*cam_info_left, *cam_info_right);
 
-        std::vector<aruco::Marker> left_markers = detector_.detect(cv_left->image, MarkerDetection::CameraId::cam_left);
+        std::vector<aruco::Marker> left_markers = detector_.detect(cv_left->image, MarkerDetection::CameraId::cam_left, config_);
         std::vector<aruco::Marker> right_markers;
         std::map<int, geometry_msgs::Pose> idPoseMap;
         if (use_stereo_) {
-            right_markers = detector_.detect(cv_right->image, MarkerDetection::CameraId::cam_right);
+            right_markers = detector_.detect(cv_right->image, MarkerDetection::CameraId::cam_right, config_);
 
             ivt_bridge::IvtStereoCalibration ivtCalib;
             ivtCalib.fromCameraInfo(cam_info_left, cam_info_right);
@@ -141,7 +153,7 @@ void ArucoMarkerRecognition::imageCallback(const sensor_msgs::ImageConstPtr& inp
         int id = 0;
         for (auto idPosePair : idPoseMap) {
             std::string object_type = "marker_" + std::to_string(idPosePair.first);
-            object_database::ObjectMetaData objectMetaData;
+            asr_object_database::ObjectMetaData objectMetaData;
             objectMetaData.request.object_type = object_type;
             objectMetaData.request.recognizer = recognizer_name_;
             object_mesh_service_client_.call(objectMetaData);
@@ -166,6 +178,10 @@ void ArucoMarkerRecognition::imageCallback(const sensor_msgs::ImageConstPtr& inp
         }
         ROS_DEBUG("--------------\n");
     }
+}
+
+void ArucoMarkerRecognition::configCallback(ArucoMarkerRecognitionConfig &config, uint32_t level) {
+    this->config_ = config;
 }
 
 cv::Mat ArucoMarkerRecognition::drawMarkers(const cv::Mat &image, const std::vector<aruco::Marker> &markers) {
@@ -426,7 +442,7 @@ asr_msgs::AsrObject ArucoMarkerRecognition::createAsrObject(const geometry_msgs:
 }
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "aruco_marker_recognition");
+    ros::init(argc, argv, "asr_aruco_marker_recognition");
     ROS_INFO("Starting up ArucoMarkerRecognition.\n");
     aruco_marker_recognition::ArucoMarkerRecognition rec;
     ROS_DEBUG("ArucoMarkerRecognition is started up.\n");
