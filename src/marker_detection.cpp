@@ -51,8 +51,8 @@ std::vector<aruco::Marker> MarkerDetection::detect(const cv::Mat &image, CameraI
             mDetector.detect(image, markers, cam_params_left_, marker_size_);
 
             if (config.showThresholdImage) {
-                cv::imshow("ThresholdImage", mDetector.getThresholdedImage());
-                cv::waitKey(10);
+                //cv::imshow("ThresholdImage", mDetector.getThresholdedImage());
+                //cv::waitKey(10);
             }
             ROS_DEBUG_STREAM("Found " << markers.size() << " marker(s) in left camera image");
         } else {
