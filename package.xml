@@ -6,6 +6,7 @@
   <author>Allgeyer Tobias, Meißner Pascal, Qattan Mohamad</author>
   <maintainer email="asr-ros@lists.kit.edu">Meißner Pascal</maintainer>
   <license>BSD</license>
+  <url type="website">http://ros.org/wiki/asr_aruco_marker_recognition</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
