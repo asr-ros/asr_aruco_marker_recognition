@@ -238,9 +238,9 @@ std::map<int, geometry_msgs::Pose> ArucoMarkerRecognition::getMarkerPoses(const 
     std::map<int, geometry_msgs::Pose> idPoseMap;
     boost::shared_ptr<CStereoCalibration> stereoCalibPtr = ivtCalib.getStereoCalibration();
 
-    for (int i = 0; i < left_markers.size(); i++) {
+    for (unsigned int i = 0; i < left_markers.size(); i++) {
         int left_id = left_markers.at(i).id;
-        for (int j = 0; j < right_markers.size(); j++) {
+        for (unsigned int j = 0; j < right_markers.size(); j++) {
             if (right_markers.at(j).id == left_id) {
                 CVec3dArray world_marker_corners(4);
                 CVec2dArray image_marker_corners_left(4);

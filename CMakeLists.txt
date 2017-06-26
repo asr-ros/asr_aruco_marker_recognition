@@ -54,14 +54,14 @@ generate_messages(
 catkin_package(
     INCLUDE_DIRS include
     CATKIN_DEPENDS roscpp std_msgs message_filters cv_bridge camera_calibration_parsers asr_ros_uri asr_ivt_bridge asr_ivt asr_object_database asr_msgs dynamic_reconfigure
-    DEPENDS OpenCV
+    #DEPENDS OpenCV
 )
 
 
 include_directories(
     include
     ${catkin_INCLUDE_DIRS}
-    ${OpenCV_INCLUDE_DIRS}
+    #${OpenCV_INCLUDE_DIRS}
 )
 
 link_directories(${catkin_LIBRARY_DIRS})
