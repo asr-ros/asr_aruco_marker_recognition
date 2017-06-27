@@ -19,7 +19,7 @@ if($ENV{ROS_DISTRO} STREQUAL "kinetic")
     add_definitions(-DOPENCV_VERSION_3=1)
 endif()
 
-#find_package(OpenCV 2 REQUIRED)
+find_package(OpenCV 2 REQUIRED)
 
 
 find_package(catkin REQUIRED COMPONENTS
