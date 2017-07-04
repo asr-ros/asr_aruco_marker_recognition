@@ -2,7 +2,9 @@
 <package>
   <name>asr_aruco_marker_recognition</name>
   <version>1.0.0</version>
-  <description>This package contains a marker recognition system</description>
+  <description>This package contains a marker recognition system using the ArUco library. 
+    It can be used with a mono or stereo camera system but yields better results with the latter.
+  </description>
   <author>Allgeyer Tobias, Meißner Pascal, Qattan Mohamad</author>
   <maintainer email="asr-ros@lists.kit.edu">Meißner Pascal</maintainer>
   <license>BSD</license>
