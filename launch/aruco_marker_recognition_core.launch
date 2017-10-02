@@ -6,7 +6,7 @@
 	  value="$(find asr_aruco_marker_recognition)/log/rosconsole.config"/>
   	<node name="asr_aruco_marker_recognition" pkg="asr_aruco_marker_recognition" type="asr_aruco_marker_recognition" output="screen">
 	    
-	   <rosparam file="$(find asr_aruco_marker_recognition)/launch/aruco_marker_recognition_params.yaml" />
+	   <rosparam file="$(find asr_aruco_marker_recognition)/param/aruco_marker_recognition_params.yaml" />
 	   
 	   <param name="showThresholdImage" value="False"/>
 	   <param name="thresholdMethod" value="1"/>
